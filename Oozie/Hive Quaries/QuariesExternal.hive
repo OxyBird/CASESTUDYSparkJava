@@ -1,0 +1,78 @@
+drop table CDW_branch;
+create external table CDW_branch
+(branch_code String, 
+Branch_Name String,
+Branch_Street String,
+Branch_City String,
+Branch_State String,
+Branch_ZIP String,
+Branch_Phone String,
+branch_last_update TIMESTAMP)
+row format delimited
+fields terminated by '	'
+lines terminated by '\n'
+location '/user/maria_dev/Folder_for_file_temp/branch_ex';
+
+drop table CDW_CreditCard;  
+
+create external table CDW_CreditCard
+(CREDIT_CARD_NO String,
+TimeID String, 
+CUST_SSN String,
+BRANCH_CODE String,
+TRANSACTION_TYPE String,
+TRANSACTION_VALUE String)
+row format delimited
+fields terminated by '	'
+lines terminated by '\n'
+stored as textfile
+location '/user/maria_dev/Folder_for_file_temp/CC'; 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+drop table CDW_customer;
+create external table CDW_customer
+(SSN STRING, 
+First_Name STRING,
+Middle_Name STRING,
+Last_Name STRING, 
+CC_NO STRING, 
+Cust_Street STRING,
+Cust_City STRING,
+Cust_State STRING,
+Cust_Country STRING,
+Cust_ZIP STRING,
+Cust_PHONE STRING,
+Cust_email STRING,
+cust_last_update TIMESTAMP)
+row format delimited
+fields terminated by '\t'
+lines terminated by '\n'
+LOCATION '/user/maria_dev/Folder_for_file_temp/Customer/';
+
+drop table CDW_Time;
+
+create external table CDW_Time
+(TimeID String,
+Day Int, 
+Month Int,
+Quarter Int,
+Year String)
+row format delimited
+fields terminated by '	'
+lines terminated by '\n'
+stored as textfile
+location '/user/maria_dev/Folder_for_file_temp/Time';
+
+

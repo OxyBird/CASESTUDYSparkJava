@@ -1,0 +1,26 @@
+1.
+Select branch_zip, sum(transaction_value) AS SUMM
+from cdw_branch_partitioned 
+JOIN cdw_creditcard_partitioned on cdw_branch_partitioned.branch_code = cdw_creditcard_partitioned.branch_code
+GROUP BY branch_zip
+ORDER BY 2 DESC
+limit 20;
+
+
+
+
+
+
+
+
+
+2.
+Select transaction_type, quarter, 
+SUM(transaction_value) AS SUMM
+from cdw_time_partitioned
+JOIN cdw_creditcard_partitioned
+on cdw_time_partitioned.timeid = cdw_creditcard_partitioned.timeid
+Group By transaction_type, quarter
+ORDER BY 1,2;
+
+

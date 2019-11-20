@@ -1,0 +1,11 @@
+update CDW_SAPP_CREDITCARD 
+set Year = year+1, TRANSACTION_VALUE = TRANSACTION_VALUE+1
+where year >2018;
+
+update CDW_SAPP_BRANCH
+set LAST_UPDATED = current_timestamp()
+where branch_code > 197;
+
+update CDW_SAPP_CUSTOMER
+set LAST_UPDATED = current_timestamp()
+WHERE SSN > 123459988;

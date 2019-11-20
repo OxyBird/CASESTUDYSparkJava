@@ -1,0 +1,12 @@
+Sqoop job Customer incremental
+
+sqoop job --meta-connect jdbc:hsqldb:hsql://localhost:16000/sqoop --create Job_CustomerSqoopINC -- import --connect jdbc:mysql://localhost/cdw_sapp --driver com.mysql.jdbc.Driver --query "SELECT SSN, concat(UPPER(substring(FIRST_NAME,1,1)),lower(substring(FIRST_NAME,2,39))) as First_Name,lower(middle_name) as Middle_Name,concat(upper(substring(last_name,1,1)),lower(substring(last_name,2,39))) as Last_Name,CREDIT_CARD_NO as CC_NO,concat(apt_no,', ',street_name) as Cust_Street,cust_city as Cust_City,CUST_STATE as Cust_State,CUST_COUNTRY as Cust_Country,cast(CUST_ZIP as SIGNED INTEGER) as Cust_ZIP,CUST_PHONE as Cust_PHONE,CUST_EMAIL as Cust_email,LAST_UPDATED from CDW_SAPP_CUSTOMER WHERE \$CONDITIONS" --target-dir /user/maria_dev/Credit_Card_System/CUSTOMER -m 1 --fields-terminated-by '\t' --incremental append --check-column LAST_UPDATED --last-value '2018-12-31'
+
+
+
+
+
+
+
+
+

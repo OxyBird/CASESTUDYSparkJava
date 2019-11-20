@@ -1,0 +1,2 @@
+oozie job -oozie http://localhost:11000/oozie -kill 0000000-190128182233516-oozie-oozi-C
+(last is a number of the job from oozie)

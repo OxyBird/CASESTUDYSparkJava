@@ -1,0 +1,109 @@
+drop table CDW_branch_PartIncremental;
+
+create external table CDW_branch_PartIncremental
+(Branch_Code String, 
+Branch_Name String,
+Branch_Street String,
+Branch_City String,
+Branch_State String,
+Branch_ZIP String,
+Branch_Phone String,
+branch_last_update TIMESTAMP)
+row format delimited
+fields terminated by '\t'
+lines terminated by '\n'
+stored as textfile
+location '/user/maria_dev/Credit_Card_System/BRANCH';
+
+SET hive.exec.dynamic.partition=true;
+SET hive.exec.dynamic.partition.mode=nonstrict;
+
+INSERT INTO TABLE CDW_Branch_Partitioned
+PARTITION (Branch_State)
+SELECT  Branch_Code, Branch_Name,Branch_Street, Branch_City,  Branch_ZIP, Branch_Phone, branch_last_update, Branch_State
+FROM cdw_branch_partincremental;
+
+drop table CDW_CreditCard_PartIncremental;
+
+create external table CDW_CreditCard_PartIncremental
+(CREDIT_CARD_NO String,
+TimeID String, 
+CUST_SSN String,
+BRANCH_CODE String,
+TRANSACTION_TYPE String,
+TRANSACTION_VALUE String)
+row format delimited
+fields terminated by '	'
+lines terminated by '\n'
+stored as textfile
+location '/user/maria_dev/Credit_Card_System/CREDIT_CARD'; 
+
+SET hive.exec.dynamic.partition=true;
+SET hive.exec.dynamic.partition.mode=nonstrict;
+
+INSERT INTO TABLE CDW_CreditCard_Partitioned
+PARTITION (TRANSACTION_TYPE)
+SELECT CREDIT_CARD_NO,TimeID,CUST_SSN,BRANCH_CODE,TRANSACTION_VALUE,TRANSACTION_TYPE
+FROM CDW_CreditCard_PartIncremental;
+
+drop table CDW_Customer_PartIncremental;
+
+create external table CDW_Customer_PartIncremental
+(SSN STRING, 
+First_Name STRING,
+Middle_Name STRING,
+Last_Name STRING, 
+CC_NO STRING, 
+Cust_Street STRING,
+Cust_City STRING,
+Cust_State STRING,
+Cust_Country STRING,
+Cust_ZIP STRING,
+Cust_PHONE STRING,
+Cust_email STRING,
+cust_last_update TIMESTAMP)
+row format delimited
+fields terminated by '	'
+lines terminated by '\n'
+stored as textfile
+location '/user/maria_dev/Credit_Card_System/CUSTOMER'; 
+
+
+SET hive.exec.dynamic.partition=true;
+SET hive.exec.dynamic.partition.mode=nonstrict;
+
+INSERT INTO TABLE CDW_Customer_Partitioned
+PARTITION (Cust_State)
+SELECT SSN,First_Name, Middle_Name, Last_Name,CC_NO, Cust_Street,Cust_City,
+Cust_Country,Cust_ZIP, Cust_PHONE,Cust_email,cust_last_update, Cust_State
+FROM CDW_Customer_PartIncremental;
+
+
+drop table CDW_Time_Partincremental;
+SET hive.exec.dynamic.partition=true;
+SET hive.exec.dynamic.partition.mode=nonstrict;
+create external table CDW_Time_Partincremental
+(TimeID String,
+Day Int, 
+Month Int,
+Year String)
+PARTITIONED BY (Quarter Int)
+ROW FORMAT DELIMITED
+Fields Terminated by '	'
+lines terminated by '\n'
+STORED AS textfile
+LOCATION "/user/maria_dev/Credit_Card_System/TIME";
+
+SET hive.exec.dynamic.partition=true;
+SET hive.exec.dynamic.partition.mode=nonstrict;
+
+INSERT INTO TABLE CDW_Time_Partitioned
+PARTITION (Quarter)
+SELECT  TimeID, Day, Month, Year, Quarter
+FROM CDW_Time_Partincremental;
+
+
+
+
+
+

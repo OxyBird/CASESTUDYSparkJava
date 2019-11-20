@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflow-app xmlns="uri:oozie:workflow:0.2" name="wf">
+
+    <start to="sqoopBranch_node"/>
+    
+
+    <action name="sqoopBranch_node">
+        <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+    <prepare>
+                <delete path="${nameNode}/user/maria_dev/Folder_for_file_temp/"/>
+    </prepare>
+
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+<command>job --meta-connect jdbc:hsqldb:hsql://localhost:16000/sqoop --exec Job_BranchSqoop</command>
+	     </sqoop>
+        <ok to="sqoopCustomer_node"/>
+        <error to="fail"/>
+
+    </action>
+     <action name="sqoopCustomer_node">
+        <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+<command>job --meta-connect jdbc:hsqldb:hsql://localhost:16000/sqoop --exec Job_CustomerSqoop</command>  
+<archive>/user/maria_dev/lib/java-json.jar#java-json.jar</archive>             
+        
+        </sqoop>
+        <ok to="sqoopCreditCard_node"/>
+        <error to="fail"/>
+
+         </action>
+     <action name="sqoopCreditCard_node">
+        <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+<command>job --meta-connect jdbc:hsqldb:hsql://localhost:16000/sqoop --exec Job_CreditCardSqoop</command> 
+<archive>/user/maria_dev/lib/java-json.jar#java-json.jar</archive>              
+        
+        </sqoop>
+        <ok to="sqoopTimed_node"/>
+        <error to="fail"/>
+</action>
+     <action name="sqoopTimed_node">
+        <sqoop xmlns="uri:oozie:sqoop-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+<command>job --meta-connect jdbc:hsqldb:hsql://localhost:16000/sqoop --exec Job_TimeSqoop</command>      
+<archive>/user/maria_dev/lib/java-json.jar#java-json.jar</archive>       
+        </sqoop>
+
+        <ok to="hive-nodeExternal"/>    
+        <error to="fail"/>
+    </action>
+  
+    <action name="hive-nodeExternal">
+        <hive xmlns="uri:oozie:hive-action:0.4">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+            <script>${nameNode}/user/maria_dev/Oozie_Case/QuariesExternal.hive</script>
+            <!--<param>OUTPUT=/user/maria_dev/Credit_Card_System/HIVE</param> this output varibale is define inside the oldmovies.sql file --> 
+            
+        </hive>
+        
+        <ok to="hive-nodePartition"/>    <!-- if everything is ok then go to hive node --> 
+        <error to="fail"/>
+    </action>
+  
+    <action name="hive-nodePartition">
+        <hive xmlns="uri:oozie:hive-action:0.2">
+            <job-tracker>${jobTracker}</job-tracker>
+            <name-node>${nameNode}</name-node>
+            <configuration>
+                <property>
+                    <name>mapred.job.queue.name</name>
+                    <value>${queueName}</value>
+                </property>
+            </configuration>
+            <script>${nameNode}/user/maria_dev/Oozie_Case/QueriesPartitioned.hive</script>
+            <!--<param>OUTPUT=/user/maria_dev/Credit_Card_System/HIVE</param> this output varibale is define inside the oldmovies.sql file --> 
+            </hive>
+
+        <ok to="end"/>
+        <error to="fail"/>
+    </action> 
+    <kill name="fail">
+        <message>Failed, Error Message[${wf:errorMessage(wf:lastErrorNode())}]</message>
+    </kill>
+    <end name="end"/>
+</workflow-app>
