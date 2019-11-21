@@ -7,7 +7,7 @@ contains case study results for next topics:
 - Hive assignments,
 - Hive visualization.
 
-## [Requirements for all projects](https://github.com/OxyBird/PRACTICE_CASE_STUDY/tree/master/Requirments)
+## [Requirements for all projects](https://github.com/OxyBird/PRACTICE_CASE_STUDY/blob/master/Requirments/Requirements_all%20projects.pdf)
 ### Oozie
 - [Jobs with sqoop jobs quaries](https://github.com/OxyBird/PRACTICE_CASE_STUDY/tree/master/Oozie/Jobs)
 - [Hive quaries](https://github.com/OxyBird/PRACTICE_CASE_STUDY/tree/master/Oozie/Hive%20Quaries)
